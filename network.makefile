@@ -7,8 +7,10 @@ network-tests: test/run-network-server
 
 test/network-server: src/network/test/tcp/server.test.o
 test/network-server: src/network/network.o
-test/network-server: src/convert/fd.o
-test/network-server: src/convert/def.o
+test/network-server: src/convert/fd/sink.o
+test/network-server: src/convert/fd/source.o
+test/network-server: src/convert/source.o
+test/network-server: src/convert/sink.o
 test/network-server: src/log/log.o
 test/network-server: src/window/alloc.o
 

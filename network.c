@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #define FLAT_INCLUDES
 #include "../keyargs/keyargs.h"
-#include "../array/range.h"
+#include "../range/def.h"
 #include "../window/def.h"
 #include "../log/log.h"
 #include "../window/alloc.h"

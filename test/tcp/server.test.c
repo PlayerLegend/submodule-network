@@ -1,15 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <assert.h>
+#include <unistd.h>
 #define FLAT_INCLUDES
 #include "../../../keyargs/keyargs.h"
-#include "../../../test/debug.h"
-#include "../../../array/range.h"
+#include "../../../range/def.h"
 #include "../../../window/def.h"
 #include "../../../window/alloc.h"
 #include "../../../network/network.h"
-#include "../../../convert/def.h"
-#include "../../../convert/fd.h"
+#include "../../../convert/source.h"
+#include "../../../convert/sink.h"
+#include "../../../convert/fd/source.h"
+#include "../../../convert/fd/sink.h"
 #include "../../../log/log.h"
 
 int main(int argc, char * argv[])
@@ -34,17 +37,23 @@ int main(int argc, char * argv[])
     window_unsigned_char window = {0};
     window_alloc (window, 1e7);
 
-    convert_interface_fd fd_io = convert_interface_fd_init(client);
+    window_unsigned_char buffer = {0};
+
+    fd_source fd_source = fd_source_init (.fd = client, .contents = &buffer);
+
+    fd_sink fd_sink = fd_sink_init (.fd = client, .contents = &buffer.region.const_cast);
 
     bool error = false;
 
-    assert (convert_fill(&error, &window, &fd_io.interface));
+    assert (convert_load_all(&error, &fd_source.source));
 
     log_normal ("completed read");
 
-    assert (convert_drain(&error, &window, &fd_io.interface));
+    assert (convert_drain(&error, &fd_sink.sink));
 
     log_normal ("completed write");
+
+    close (host);
 
     return 0;
 }
